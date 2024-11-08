@@ -8,6 +8,23 @@ pipeline {
     }
 
     stages {
+        stage('Install Azure CLI') {
+            steps {
+                script {
+                    // Check if Azure CLI is installed; if not, install it
+                    def cliInstalled = sh(script: 'command -v az', returnStatus: true) == 0
+                    if (!cliInstalled) {
+                        echo 'Installing Azure CLI...'
+                        sh '''
+                        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+                        '''
+                    } else {
+                        echo 'Azure CLI is already installed.'
+                    }
+                }
+            }
+        }
+
         stage('Load and Execute Groovy Script') {
             steps {
                 script {
